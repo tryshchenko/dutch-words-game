@@ -1,4 +1,5 @@
 (() => {
+    const MESSAGE_DELAY = 3000;
     // The only side effect for each function
     const state = {
         dutchWord: 'init',
@@ -13,13 +14,20 @@
     const randomizer = () => Math.random() > 0.5 ? 1 : -1;
 
     const notify = (message) => {
+        if (!message.length && this.timer) {
+            clearTimeout(this.timer);
+            this.timer = null;
+        }
         DOM.result.innerHTML = message;
         DOM.guessed.innerHTML = state.guessed;
-        message.length && setTimeout(_ => notify(''), 1000);
+        if (message.length) {
+            this.timer = setTimeout(_ => notify(''), MESSAGE_DELAY);
+        }
         !message.length && state.iterate();
     }
 
     const handleClick = (id) => (event) => {
+        if (this.timer) return;
         if (event.target.innerHTML === state.answer) {
             state.guessed++;
             return notify('Correct');
