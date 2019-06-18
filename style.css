@@ -8,7 +8,6 @@
 
 html {
     height: 100%;
-    overflow: hidden;
 }
 
 .wrapper {
@@ -39,7 +38,7 @@ h1, h2 {
 }
 
 #result {
-    height: 50px;
+    height: 70px;
 }
 
 ul {
@@ -56,6 +55,11 @@ li {
     border: 5px solid #607D8B;
     margin: 5px;
     text-transform: capitalize;
+    cursor: pointer;
+}
+
+li:hover {
+    background-color: #66b4db
 }
 
 @media (min-width: 768px)  {
