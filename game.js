@@ -1,17 +1,19 @@
 const Authentication = new Promise((res, rej) => {
-  const user = netlifyIdentity.currentUser();
-  console.log({ user });
-  if (!user) {
-    netlifyIdentity.init({
-      APIUrl: "https://www.example.com/.netlify/functions/identity"
-    });
-    netlifyIdentity.on("init", user => {
-      netlifyIdentity.open();
-    });
-    netlifyIdentity.on("login", user => res(user));
-    netlifyIdentity.on("error", err => console.error("Error", err));
-  }
-  netlifyIdentity.on("close", () => rej(user));
+  setTimeout(() => {
+    const user = netlifyIdentity.currentUser();
+    console.log({ user });
+    if (!user) {
+      netlifyIdentity.init({
+        APIUrl: "https://www.example.com/.netlify/functions/identity"
+      });
+      netlifyIdentity.on("init", user => {
+        netlifyIdentity.open();
+      });
+      netlifyIdentity.on("login", user => res(user));
+      netlifyIdentity.on("error", err => console.error("Error", err));
+    }
+    netlifyIdentity.on("close", () => rej(user));
+  }, 10000);
 });
 
 (() => {
