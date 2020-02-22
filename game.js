@@ -2,7 +2,9 @@ const Authentication = new Promise((res, rej) => {
   const user = netlifyIdentity.currentUser();
   console.log({ user });
   if (!user) {
-    netlifyIdentity.init();
+    netlifyIdentity.init({
+      APIUrl: "https://www.example.com/.netlify/functions/identity"
+    });
     netlifyIdentity.on("init", user => {
       netlifyIdentity.open();
     });
