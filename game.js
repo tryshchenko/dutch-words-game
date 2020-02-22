@@ -4,7 +4,7 @@ const Authentication = new Promise((res, rej) => {
   if (!user) {
     netlifyIdentity.init();
     netlifyIdentity.open();
-    netlifyIdentity.on("init", user => res(user));
+    // netlifyIdentity.on("init", user => res(user));
     netlifyIdentity.on("login", user => res(user));
     netlifyIdentity.on("error", err => console.error("Error", err));
   }
