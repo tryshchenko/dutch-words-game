@@ -3,11 +3,11 @@ const Authentication = new Promise((res, rej) => {
   console.log({ user });
   if (!user) {
     netlifyIdentity.init();
-    netlifyIdentity.open();
     netlifyIdentity.on("init", user => {
-      netlifyIdentity.on("login", user => res(user));
-      netlifyIdentity.on("error", err => console.error("Error", err));
+      netlifyIdentity.open();
     });
+    netlifyIdentity.on("login", user => res(user));
+    netlifyIdentity.on("error", err => console.error("Error", err));
   }
   netlifyIdentity.on("close", () => rej(user));
 });
