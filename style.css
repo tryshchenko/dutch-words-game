@@ -10,7 +10,6 @@ html {
 }
 html,
 body {
-  position: fixed;
   overflow: hidden;
   width: 100%;
 }
@@ -19,7 +18,7 @@ body {
   background-color: #7d2977;
   background-image: linear-gradient(189deg, transparent, #302dd6);
   transition: 0.5 all;
-  height: 90vh;
+  height: 100%;
 }
 
 body.success {
