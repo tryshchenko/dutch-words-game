@@ -64,9 +64,7 @@ const Authentication = new Promise((res, rej) => {
 
   window.onload = function() {
     const ref = document.getElementById.bind(document);
-    netlifyIdentity.init({
-      APIUrl: "https://www.example.com/.netlify/functions/identity"
-    });
+    netlifyIdentity.init({});
     netlifyIdentity.open();
     Authentication.then(user => {
       const options = [
