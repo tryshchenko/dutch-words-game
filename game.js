@@ -1,19 +1,11 @@
 const Authentication = new Promise((res, rej) => {
-  setTimeout(() => {
-    const user = netlifyIdentity.currentUser();
-    console.log({ user });
-    if (!user) {
-      netlifyIdentity.init({
-        APIUrl: "https://www.example.com/.netlify/functions/identity"
-      });
-      netlifyIdentity.on("init", user => {
-        netlifyIdentity.open();
-      });
-      netlifyIdentity.on("login", user => res(user));
-      netlifyIdentity.on("error", err => console.error("Error", err));
-    }
-    netlifyIdentity.on("close", () => rej(user));
-  }, 10000);
+  const user = netlifyIdentity.currentUser();
+  console.log({ user });
+  if (!user) {
+    netlifyIdentity.on("login", user => res(user));
+    netlifyIdentity.on("error", err => console.error("Error", err));
+  }
+  netlifyIdentity.on("close", () => rej(user));
 });
 
 (() => {
@@ -72,7 +64,10 @@ const Authentication = new Promise((res, rej) => {
 
   window.onload = function() {
     const ref = document.getElementById.bind(document);
-
+    netlifyIdentity.init({
+      APIUrl: "https://www.example.com/.netlify/functions/identity"
+    });
+    netlifyIdentity.open();
     Authentication.then(user => {
       const options = [
         ref("option-1"),
