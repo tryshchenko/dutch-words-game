@@ -1,10 +1,8 @@
 const Authentication = new Promise((res, rej) => {
   const user = netlifyIdentity.currentUser();
   console.log({ user });
-  if (!user) {
-    netlifyIdentity.on("login", user => res(user));
-    netlifyIdentity.on("error", err => console.error("Error", err));
-  }
+  netlifyIdentity.on("login", user => res(user));
+  netlifyIdentity.on("error", err => console.error("Error", err));
   netlifyIdentity.on("close", () => rej(user));
 });
 
@@ -19,25 +17,27 @@ const Authentication = new Promise((res, rej) => {
     iterate: () => {}
   };
 
+  let timer = null;
+
   let DOM = {};
 
   const randomizer = () => (Math.random() > 0.5 ? 1 : -1);
 
   const notify = message => {
-    if (!message.length && this.timer) {
-      clearTimeout(this.timer);
-      this.timer = null;
+    if (!message.length && timer) {
+      clearTimeout(timer);
+      timer = null;
     }
     DOM.result.innerHTML = message;
     DOM.guessed.innerHTML = state.guessed;
     if (message.length) {
-      this.timer = setTimeout(_ => notify(""), MESSAGE_DELAY);
+      timer = setTimeout(_ => notify(""), MESSAGE_DELAY);
     }
     !message.length && state.iterate();
   };
 
   const handleClick = id => event => {
-    if (this.timer) return;
+    if (timer) return;
     event.target.classList.add("selected");
     if (event.target.innerHTML === state.answer) {
       state.guessed++;
@@ -62,37 +62,41 @@ const Authentication = new Promise((res, rej) => {
     document.activeElement.blur();
   };
 
-  window.onload = function() {
+  const initialize = user => {
     const ref = document.getElementById.bind(document);
+
+    const options = [
+      ref("option-1"),
+      ref("option-2"),
+      ref("option-3"),
+      ref("option-4")
+    ];
+
+    DOM = Object.assign(
+      {
+        result: ref("result"),
+        guessed: ref("guessed"),
+        dutch: ref("dutch")
+      },
+      DOM
+    );
+
+    const listeners = options.map((option, i) =>
+      option.addEventListener("click", handleClick(i))
+    );
+
+    state.iterate = next({
+      options,
+      listeners,
+      words: window.$wordsApp.vocabulary
+    });
+    state.iterate();
+  };
+
+  window.onload = function() {
     netlifyIdentity.init({});
     netlifyIdentity.open();
-    Authentication.then(user => {
-      const options = [
-        ref("option-1"),
-        ref("option-2"),
-        ref("option-3"),
-        ref("option-4")
-      ];
-
-      DOM = Object.assign(
-        {
-          result: ref("result"),
-          guessed: ref("guessed"),
-          dutch: ref("dutch")
-        },
-        DOM
-      );
-
-      const listeners = options.map((option, i) =>
-        option.addEventListener("click", handleClick(i))
-      );
-
-      state.iterate = next({
-        options,
-        listeners,
-        words: window.$wordsApp.vocabulary
-      });
-      state.iterate();
-    }).catch(error => console.error(error));
+    // initialize();
+    Authentication.then(initialize).catch(error => console.error(error));
   };
 })();
