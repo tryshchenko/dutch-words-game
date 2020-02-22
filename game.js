@@ -7,7 +7,9 @@ const Authentication = new Promise((res, rej) => {
     netlifyIdentity.on("login", user => res(user));
   }
   netlifyIdentity.on("close", () => rej(user));
-})(() => {
+});
+
+(() => {
   const MESSAGE_DELAY = 3000;
   // The only side effect for each function
   const state = {
